@@ -109,7 +109,7 @@
     </div>
 
     <script>
-        const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz-gY3KtL8KQTJTpQYvbwg760qClWgJXXOalxA77kHvNphee1Nl_zG1SFGVcCBU90hP/exec"
+        const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz-gY3KtL8KQTJTpQYvbwg760qClWgJXXOalxA77kHvNphee1Nl_zG1SFGVcCBU90hP/exec";
 
         async function checkLicense() {
             const key = document.getElementById('keyInput').value.trim();
@@ -126,11 +126,13 @@
 
             const deviceId = navigator.userAgent.replace(/\s+/g, '').substring(0, 20);
 
+            // CORS බ්ලොක් වීම වැළැක්වීම සඳහා GET Request එකක් ලෙස URL එක අගට Data එකතු කිරීම සකස් කර ඇත
+            const finalUrl = `${GOOGLE_WEB_APP_URL}?license_key=${encodeURIComponent(key)}&device_id=${encodeURIComponent(deviceId)}`;
+
             try {
-                const response = await fetch(GOOGLE_WEB_APP_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify({ license_key: key, device_id: deviceId })
+                const response = await fetch(finalUrl, {
+                    method: 'GET',
+                    mode: 'cors'
                 });
                 
                 const result = await response.json();
@@ -144,11 +146,12 @@
                     }, 1200);
                 } else {
                     msgEl.style.color = "#ff4d4d";
-                    msgEl.innerText = result.message;
+                    msgEl.innerText = result.message || "Invalid Key!";
                 }
             } catch (error) {
+                console.error(error);
                 msgEl.style.color = "#ff4d4d";
-                msgEl.innerText = "Server error or CORS blocked!";
+                msgEl.innerText = "Connection error or invalid script response!";
             }
         }
 
@@ -158,3 +161,6 @@
             document.getElementById('keyInput').value = "";
             document.getElementById('msg').innerText = "";
         }
+    </script>
+</body>
+</html>
