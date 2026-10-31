@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-REG PANEL</title>
+    <style>
+        body {
+            background-color: #0b0c10;
+            color: #c5c6c7;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #1f2833;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            width: 320px;
+            text-align: center;
+            border: 1px solid #45a29e;
+        }
+        h2 { color: #66fcf1; margin-bottom: 20px; letter-spacing: 2px; }
+        input[type="text"] {
+            width: 90%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #45a29e;
+            border-radius: 6px;
+            background-color: #0b0c10;
+            color: #fff;
+            font-size: 16px;
+            text-align: center;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #45a29e;
+            color: #0b0c10;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover { background-color: #66fcf1; }
+        #msg { margin-top: 15px; font-weight: bold; font-size: 14px; }
+        
+        .hidden { display: none; }
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: #0b0c10;
+            border-radius: 6px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 45px;
+            height: 24px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc; transition: .4s; border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px;
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #66fcf1; }
+        input:checked + .slider:before { transform: translateX(21px); }
+    </style>
+</head>
+<body>
+
+    <!-- 1. LOGIN PAGE -->
+    <div id="loginPage" class="container">
+        <h2>X-REG AUTH</h2>
+        <input type="text" id="keyInput" placeholder="XREG-XXXX-XXXX">
+        <button onclick="checkLicense()">AUTHENTICATE</button>
+        <p id="msg"></p>
+    </div>
+
+    <!-- 2. DASHBOARD PANEL -->
+    <div id="dashboardPage" class="container hidden">
+        <h2>X-REG MENU</h2>
+        <div class="menu-item">
+            <span>Aimbot (Headshot)</span>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+        </div>
+        <div class="menu-item">
+            <span>Target Hold</span>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+        </div>
+        <div class="menu-item">
+            <span>Antiban Protection</span>
+            <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+        </div>
+        <button onclick="logout()" style="background-color: #ff4d4d; color: white; margin-top: 15px;">LOGOUT</button>
+    </div>
+
+    <script>
+        const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzF7fqReXDnt7-I3zs29G_iWtCM8PiSmjFaIcKagch_F9IvArvNVMF_ziLH7gSzPCnhtA/exec"
+
+        async function checkLicense() {
+            const key = document.getElementById('keyInput').value.trim();
+            const msgEl = document.getElementById('msg');
+            
+            if(!key) {
+                msgEl.style.color = "#ff4d4d";
+                msgEl.innerText = "Please enter a key!";
+                return;
+            }
+
+            msgEl.style.color = "#66fcf1";
+            msgEl.innerText = "Checking Key...";
+
+            const deviceId = navigator.userAgent.replace(/\s+/g, '').substring(0, 20);
+
+            try {
+                const response = await fetch(GOOGLE_WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ license_key: key, device_id: deviceId })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    msgEl.style.color = "#2ecc71";
+                    msgEl.innerText = "Access Granted! Loading...";
+                    setTimeout(() => {
+                        document.getElementById('loginPage').classList.add('hidden');
+                        document.getElementById('dashboardPage').classList.remove('hidden');
+                    }, 1200);
+                } else {
+                    msgEl.style.color = "#ff4d4d";
+                    msgEl.innerText = result.message;
+                }
+            } catch (error) {
+                msgEl.style.color = "#ff4d4d";
+                msgEl.innerText = "Server error or CORS blocked!";
+            }
+        }
+
+        function logout() {
+            document.getElementById('dashboardPage').classList.add('hidden');
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('keyInput').value = "";
+            document.getElementById('msg').innerText = "";
+        }
