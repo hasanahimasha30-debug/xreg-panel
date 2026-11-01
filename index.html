@@ -1,166 +1,162 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X-REG PANEL</title>
+    <title>X-REG CLIENT PANEL</title>
     <style>
-        body {
-            background-color: #0b0c10;
-            color: #c5c6c7;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background-color: #1f2833;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-            width: 320px;
-            text-align: center;
-            border: 1px solid #45a29e;
-        }
-        h2 { color: #66fcf1; margin-bottom: 20px; letter-spacing: 2px; }
-        input[type="text"] {
-            width: 90%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border: 2px solid #45a29e;
-            border-radius: 6px;
-            background-color: #0b0c10;
-            color: #fff;
-            font-size: 16px;
-            text-align: center;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #45a29e;
-            color: #0b0c10;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        button:hover { background-color: #66fcf1; }
-        #msg { margin-top: 15px; font-weight: bold; font-size: 14px; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0d0e12; color: #a0a5b5; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .panel { width: 100%; max-width: 400px; background: #13151c; border-radius: 12px; border: 1px solid #1f222e; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
+        
+        /* Navigation Tabs */
+        .navbar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f222e; padding-bottom: 10px; margin-bottom: 20px; }
+        .nav-links { display: flex; gap: 15px; }
+        .nav-item { font-size: 13px; font-weight: bold; letter-spacing: 1px; color: #5f6377; cursor: pointer; text-transform: uppercase; padding-bottom: 5px; }
+        .nav-item.active { color: #515dfa; border-bottom: 2px solid #515dfa; }
+        .lang-btn { background: #1c1e27; border: 1px solid #2d3142; color: #a0a5b5; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        
+        /* Modules Content */
+        .card { background: #171a24; border: 1px solid #1f222e; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .card-title { font-size: 13px; font-weight: bold; color: #fff; text-transform: uppercase; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; }
+        .card-desc { font-size: 11px; color: #62677f; margin: 0 0 12px 0; line-height: 1.4; }
+        .risk-badge { background: #3a221d; color: #ff6b4a; font-size: 9px; font-weight: bold; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; margin-left: 6px; }
+        
+        /* Grid Buttons for Tags */
+        .tag-grid { display: grid; grid-template-columns: repeat(4, 1-debugfr); gap: 8px; margin-bottom: 5px; }
+        .tag-btn { background: #12141d; border: 1px solid #1f222e; color: #434758; padding: 6px 0; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; text-align: center; }
+        .tag-btn.active { background: #262c5c; border-color: #4a55b3; color: #7888ff; }
+        
+        /* Sub Options */
+        .sub-options { margin-top: 10px; padding-left: 10px; border-left: 1px solid #232736; display: flex; flex-direction: column; gap: 10px; }
+        .sub-item { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #7b809a; }
+        
+        /* Custom Switch Slider */
+        .switch { position: relative; display: inline-block; width: 38px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #232736; transition: .3s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: #a0a5b5; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: #3b48df; }
+        input:checked + .slider:before { transform: translateX(18px); background-color: #fff; }
         
         .hidden { display: none; }
-        .menu-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 15px 0;
-            padding: 10px;
-            background: #0b0c10;
-            border-radius: 6px;
-        }
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 45px;
-            height: 24px;
-        }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc; transition: .4s; border-radius: 24px;
-        }
-        .slider:before {
-            position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px;
-            background-color: white; transition: .4s; border-radius: 50%;
-        }
-        input:checked + .slider { background-color: #66fcf1; }
-        input:checked + .slider:before { transform: translateX(21px); }
     </style>
 </head>
 <body>
 
-    <!-- 1. LOGIN PAGE -->
-    <div id="loginPage" class="container">
-        <h2>X-REG AUTH</h2>
-        <input type="text" id="keyInput" placeholder="XREG-XXXX-XXXX">
-        <button onclick="checkLicense()">AUTHENTICATE</button>
-        <p id="msg"></p>
+<div class="panel">
+    <!-- Navbar Tabs -->
+    <div class="navbar">
+        <div class="nav-links">
+            <div class="nav-item" onclick="switchTab('control')">Control</div>
+            <div class="nav-item active" onclick="switchTab('modules')">Modules</div>
+            <div class="nav-item" onclick="switchTab('system')">System</div>
+        </div>
+        <button class="lang-btn">EN</button>
     </div>
 
-    <!-- 2. DASHBOARD PANEL -->
-    <div id="dashboardPage" class="container hidden">
-        <h2>X-REG MENU</h2>
-        <div class="menu-item">
-            <span>Aimbot (Headshot)</span>
-            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+    <!-- MODULES TAB CONTENT -->
+    <div id="modules-tab">
+        <!-- 1. PING PRESET -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">☉ Ping Preset <span class="risk-badge">Risk</span></div>
+                <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+            </div>
+            <p class="card-desc">Every enemy gets tagged on your screen. Choose the tag.</p>
+            <div class="tag-grid">
+                <button class="tag-btn active">XREG</button>
+                <button class="tag-btn">Dreamland</button>
+                <button class="tag-btn">RED</button>
+                <button class="tag-btn">Moco</button>
+                <button class="tag-btn">Clu</button>
+                <button class="tag-btn">Shirou</button>
+                <button class="tag-btn">Iris</button>
+                <button class="tag-btn">Dreki</button>
+            </div>
         </div>
-        <div class="menu-item">
-            <span>Target Hold</span>
-            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
-        </div>
-        <div class="menu-item">
-            <span>Antiban Protection</span>
-            <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
-        </div>
-        <button onclick="logout()" style="background-color: #ff4d4d; color: white; margin-top: 15px;">LOGOUT</button>
-    </div>
 
-    <script>
-        const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyPgZ25q255UKWt4u5N1ywnn1_cIO7AUA4f5dftZ8HKc0HrCCIAU1s6qIyXzIy3AB6u-Q/exec";
+        <!-- 2. AIMPOINT -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">⚙ Aimpoint</div>
+                <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+            </div>
+            <p class="card-desc">Aim assist anchors to the neck, not the chest - body hits count as headshots.</p>
+        </div>
 
-        async function checkLicense() {
-            const key = document.getElementById('keyInput').value.trim();
-            const msgEl = document.getElementById('msg');
+        <!-- 3. TARGET HOLD -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">⚃ Target Hold</div>
+                <label class="switch"><input type="checkbox" id="targetHoldToggle" onchange="toggleSubOptions()"><span class="slider"></span></label>
+            </div>
+            <p class="card-desc">Holds the target in place for a beat while you shoot or scope.</p>
             
-            if(!key) {
-                msgEl.style.color = "#ff4d4d";
-                msgEl.innerText = "Please enter a key!";
-                return;
-            }
+            <div class="sub-options" id="targetHoldSub">
+                <div class="sub-item">
+                    <span>on fire</span>
+                    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                </div>
+                <div class="sub-item">
+                    <span>on scope</span>
+                    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                </div>
+            </div>
+        </div>
 
-            msgEl.style.color = "#66fcf1";
-            msgEl.innerText = "Checking Key...";
+        <!-- 4. WALL FLIP -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">↻ Wall Flip</div>
+                <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+            </div>
+            <p class="card-desc">Sets the facing of your gloo wall to the reverse orientation.</p>
+        </div>
+    </div>
 
-            const deviceId = navigator.userAgent.replace(/\s+/g, '').substring(0, 20);
+    <!-- CONTROL & SYSTEM TABS (PLACEHOLDERS) -->
+    <div id="control-tab" class="hidden" style="padding: 20px; text-align: center; color: #5f6377;">Control Settings Content</div>
+    <div id="system-tab" class="hidden" style="padding: 20px; text-align: center; color: #5f6377;">System Information Content</div>
+</div>
 
-            // CORS බ්ලොක් වීම වැළැක්වීම සඳහා GET Request එකක් ලෙස URL එක අගට Data එකතු කිරීම සකස් කර ඇත
-            const finalUrl = `${GOOGLE_WEB_APP_URL}?license_key=${encodeURIComponent(key)}&device_id=${encodeURIComponent(deviceId)}`;
+<script>
+    // Tab switching logic
+    function switchTab(tabName) {
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.getElementById('modules-tab').classList.add('hidden');
+        document.getElementById('control-tab').classList.add('hidden');
+        document.getElementById('system-tab').classList.add('hidden');
 
-            try {
-                const response = await fetch(finalUrl, {
-                    method: 'GET',
-                    mode: 'cors'
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    msgEl.style.color = "#2ecc71";
-                    msgEl.innerText = "Access Granted! Loading...";
-                    setTimeout(() => {
-                        document.getElementById('loginPage').classList.add('hidden');
-                        document.getElementById('dashboardPage').classList.remove('hidden');
-                    }, 1200);
-                } else {
-                    msgEl.style.color = "#ff4d4d";
-                    msgEl.innerText = result.message || "Invalid Key!";
-                }
-            } catch (error) {
-                console.error(error);
-                msgEl.style.color = "#ff4d4d";
-                msgEl.innerText = "Connection error or invalid script response!";
-            }
+        event.target.classList.add('active');
+        document.getElementById(tabName + '-tab').classList.remove('hidden');
+    }
+
+    // Sub options logic for Target Hold
+    function toggleSubOptions() {
+        const isChecked = document.getElementById('targetHoldToggle').checked;
+        const subOptions = document.getElementById('targetHoldSub');
+        if(isChecked) {
+            subOptions.style.opacity = "1";
+            subOptions.style.pointerEvents = "auto";
+        } else {
+            subOptions.style.opacity = "0.4";
+            subOptions.style.pointerEvents = "none";
         }
+    }
+    
+    // Tag buttons toggle logic
+    document.querySelectorAll('.tag-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
 
-        function logout() {
-            document.getElementById('dashboardPage').classList.add('hidden');
-            document.getElementById('loginPage').classList.remove('hidden');
-            document.getElementById('keyInput').value = "";
-            document.getElementById('msg').innerText = "";
-        }
-    </script>
+    // Initialize sub options state
+    toggleSubOptions();
+</script>
+
 </body>
 </html>
